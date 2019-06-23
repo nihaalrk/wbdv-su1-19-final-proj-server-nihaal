@@ -1,13 +1,16 @@
 package com.example.wbdvsu119finalprojservernihaal.models;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-//@Table(name="users_on_reddit")
+@Table(name="users_on_reddit")
 public class UserOnReddit {
 
 	@Id
@@ -23,6 +26,11 @@ public class UserOnReddit {
 	private String email;
 	
 	private String redditUsername;
+	
+	@OneToMany
+	private List<RedditThread> likedThreads;
+	@OneToMany
+	private List<RedditUser> likedUsers;
 	
 	public Integer getId() {
 		return id;

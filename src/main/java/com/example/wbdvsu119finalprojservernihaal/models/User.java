@@ -4,10 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import java.util.List;
+
 @Entity
-//@Table(name="users")
+@Table(name="users")
 public class User {
 
 	@Id
@@ -21,6 +25,10 @@ public class User {
 	
 	private String state;
 	private String email;
+	
+	@ManyToMany
+	private List<RedditThread> likedThreads;
+	
 	public Integer getId() {
 		return id;
 	}
