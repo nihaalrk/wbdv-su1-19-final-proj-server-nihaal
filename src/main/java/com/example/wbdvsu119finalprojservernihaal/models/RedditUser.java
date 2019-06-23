@@ -3,16 +3,29 @@ package com.example.wbdvsu119finalprojservernihaal.models;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="reddit_users")
 public class RedditUser {
 
+	@Id
 	private String username;
 	private Integer commentKarma;
-	private String linkKarma;
+	private Integer linkKarma;
 	
+	@ManyToMany
+	@JsonIgnore
+	@JoinTable(
+	        name="reddit_threads_users",
+	        joinColumns=@JoinColumn(name="reddit_user_username", referencedColumnName="username"),
+	        inverseJoinColumns=@JoinColumn(name="reddit_thread_id", referencedColumnName="id"))
 	private List<RedditThread> threadsCommented;
 
 	public String getUsername() {
@@ -31,11 +44,11 @@ public class RedditUser {
 		this.commentKarma = commentKarma;
 	}
 
-	public String getLinkKarma() {
+	public Integer getLinkKarma() {
 		return linkKarma;
 	}
 
-	public void setLinkKarma(String linkKarma) {
+	public void setLinkKarma(Integer linkKarma) {
 		this.linkKarma = linkKarma;
 	}
 
