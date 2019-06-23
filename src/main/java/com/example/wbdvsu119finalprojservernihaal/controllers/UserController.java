@@ -6,14 +6,18 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.wbdvsu119finalprojservernihaal.models.RedditThread;
 import com.example.wbdvsu119finalprojservernihaal.models.User;
 import com.example.wbdvsu119finalprojservernihaal.models.UserOnReddit;
+import com.example.wbdvsu119finalprojservernihaal.repositories.RedditThreadRepository;
 import com.example.wbdvsu119finalprojservernihaal.repositories.UserOnRedditRepository;
 import com.example.wbdvsu119finalprojservernihaal.repositories.UserRepository;
 
@@ -24,6 +28,8 @@ public class UserController {
 	UserRepository userRepository;
 	@Autowired
 	UserOnRedditRepository userORRepository;
+	@Autowired
+	RedditThreadRepository threadRepository;
 	
 	@GetMapping("/api/users")
     public List<User> findAllUsers() {
@@ -114,7 +120,48 @@ public class UserController {
 	    return new User();
 	}
 
-
-
-	
+    @PutMapping("/api/users/{id}")
+    public User updateUser(@RequestBody User newUser, @PathVariable Integer id, HttpSession session) {
+    	User user = userRepository.findUserById(id);
+    	user.setFirstName(newUser.getFirstName());
+    	user.setLastName(newUser.getLastName());
+    	user.setEmail(newUser.getEmail());
+    	user.setState(newUser.getState());
+    	session.setAttribute("currentUser", user);
+    	return userRepository.save(user);
+    }
+    
+    @PutMapping("/api/usersOnReddit/{id}")
+    public UserOnReddit updateUserOnReddit(@RequestBody UserOnReddit newUser, @PathVariable Integer id, HttpSession session) {
+    	UserOnReddit user = userORRepository.findUserOnRedditById(id);
+    	user.setFirstName(newUser.getFirstName());
+    	user.setLastName(newUser.getLastName());
+    	user.setEmail(newUser.getEmail());
+    	user.setState(newUser.getState());
+    	session.setAttribute("currentUser", user);
+    	return userORRepository.save(user);
+    }
+    
+    @DeleteMapping("/api/users/{id}")
+	public void deleteUser(@PathVariable Integer id) {
+		userRepository.deleteById(id);
+	}
+    
+    @DeleteMapping("/api/usersOnReddit/{id}")
+	public void deleteUserOnReddit(@PathVariable Integer id) {
+		userORRepository.deleteById(id);
+	}
+    
+    @PutMapping("api/usersOnReddit/{id}/threads/{thread_id}")
+    public UserOnReddit addThreadLike(@PathVariable Integer id, @PathVariable String thread_id, HttpSession session) {
+    	UserOnReddit user = userORRepository.findUserOnRedditById(id);
+    	RedditThread thread = threadRepository.findRedditThreadById(thread_id);
+    	if (thread != null) {
+    		user.getLikedThreads().add(thread);
+    		session.setAttribute("currentUser", user);
+    	}
+    	return userORRepository.save(user);
+    }
+    		
+    		
 }

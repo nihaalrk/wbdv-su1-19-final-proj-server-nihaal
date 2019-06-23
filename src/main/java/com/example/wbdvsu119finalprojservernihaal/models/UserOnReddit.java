@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,10 +30,18 @@ public class UserOnReddit {
 	
 	private String redditUsername;
 	
-	@OneToMany
+	public List<RedditThread> getLikedThreads() {
+		return likedThreads;
+	}
+	public void setLikedThreads(List<RedditThread> likedThreads) {
+		this.likedThreads = likedThreads;
+	}
+	@ManyToMany
+	@JoinTable(
+        name="users_reddit_threads",
+        joinColumns=@JoinColumn(name="user_id", referencedColumnName="id"),
+        inverseJoinColumns=@JoinColumn(name="reddit_thread_id", referencedColumnName="id"))
 	private List<RedditThread> likedThreads;
-	@OneToMany
-	private List<RedditUser> likedUsers;
 	
 	public Integer getId() {
 		return id;
